@@ -1,11 +1,28 @@
-meme_dict = {
-            "CRINGE": "Coś wyjątkowo dziwnego lub zawstydzającego",
-            "LOL": "Częsta reakcja na coś zabawnego",
-            }
+import discord
+from password_gen import pass_gen
 
-word = input("Wpisz słowo, którego nie rozumiesz (używaj wielkich liter!): ").upper()
+# Zmienna intencje przechowuje uprawnienia bota
+intents = discord.Intents.default()
+# Włączanie uprawnienia do czytania wiadomości
+intents.message_content = True
+# Tworzenie bota w zmiennej klienta i przekazanie mu uprawnień
+client = discord.Client(intents=intents)
 
-if word in meme_dict.keys():
-    print(word, ": ", meme_dict[word])
-else:
-    print("Nie ma takiego słowa w naszym słowniku")
+@client.event
+async def on_ready():
+    print(f'Zalogowaliśmy się jako {client.user}')
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    if message.content.startswith('$hello'):
+        await message.channel.send("Cześć!")
+    elif message.content.startswith('$bye'):
+        await message.channel.send("\U0001f642")
+    elif message.content.startswith("$password"):
+        await message.channel.send("Wygenerowane hasło: " + pass_gen())
+    else:
+        await message.channel.send(message.content)
+
+client.run("")
